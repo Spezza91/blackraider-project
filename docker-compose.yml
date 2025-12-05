@@ -12,6 +12,7 @@ services:
       - 6881:6881/udp # Porta Torrent UDP
     volumes:
       - ./config/gluetun:/gluetun
+      - ./gluetun_shared:/tmp/gluetun
     environment:
       - VPN_SERVICE_PROVIDER=protonvpn
       - VPN_TYPE=wireguard
@@ -19,7 +20,23 @@ services:
       - SERVER_COUNTRIES=Switzerland # O Netherlands, Iceland...
       - VPN_PORT_FORWARDING=on       # Attiva il Port Forwarding
     restart: unless-stopped
-  # --- GESTORE DOWNLOAD ---z
+
+  # --- MICROSERVIZIO CUSTOM ---
+  qbit-sync:
+    image: spezza91/qbit-sync:latest
+    container_name: qbit-sync
+    volumes:
+      - ./gluetun_shared:/shared:ro
+    environment:
+      - QBIT_HOST=http://gluetun:8080
+      - QBIT_USER=${QUSER}
+      - QBIT_PASS=${QPASS}
+    depends_on:
+      - qbittorrent
+      - gluetun
+    restart: unless-stopped
+    
+  # --- GESTORE DOWNLOAD ---
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
@@ -50,7 +67,7 @@ services:
       - 9696:9696
     restart: unless-stopped
 
-  # --- ANTI-CAPTCHA (Per Prowlarr) ---
+  # --- ANTI-CAPTCHA ---
   flaresolverr:
     image: flaresolverr/flaresolverr:latest
     container_name: flaresolverr
@@ -113,7 +130,7 @@ services:
       - /dev/dri:/dev/dri # Intel QuickSync ATTIVO 🚀
     restart: unless-stopped
 
-  # --- LOG VIEWER (Opzionale ma comodo) ---
+  # --- LOG VIEWER ---
   dozzle:
     image: amir20/dozzle:latest
     container_name: dozzle
@@ -123,7 +140,7 @@ services:
       - 8888:8080
     restart: unless-stopped
 
-  # --- DASHBOARD (Homepage) ---
+  # --- DASHBOARD ---
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
@@ -139,7 +156,7 @@ services:
       - HOMEPAGE_ALLOWED_HOSTS=*
     restart: unless-stopped
 
-  # --- GESTORE DOCKER (Portainer) ---
+  # --- GESTORE DOCKER ---
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer

@@ -1,0 +1,13 @@
+FROM python:3.11-alpine
+
+# Disabilita il buffering per vedere i log in tempo reale
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Installa l'unica dipendenza
+RUN pip install requests
+
+COPY main.py .
+
+CMD ["python", "main.py"]

@@ -1,0 +1,94 @@
+- Media Center:
+    - Jellyfin:
+        icon: jellyfin.png
+        href: http://192.168.1.104:8096
+        description: Streaming
+        server: my-docker
+        container: jellyfin
+    - qBittorrent:
+        icon: qbittorrent.png
+        href: http://192.168.1.104:8080
+        description: Download Client
+        server: my-docker
+        container: qbittorrent
+        widget:
+          type: qbittorrent
+          url: http://192.168.1.104:8080
+          username: admin
+          password: ItalianoVero91
+    - Jellyseerr:
+        icon: jellyseerr.png
+        href: http://192.168.1.104:5055
+        description: Richieste Film/Serie
+        server: my-docker
+        container: jellyseerr
+        # Widget disabilitato (serve API Key, lo attiveremo dopo)
+        widget:
+          type: jellyseerr
+          url: http://192.168.1.104:5055
+          key: MTc2NTEzNTQ0MDU5N2Y1Y2ZiNmYwLTUyNDUtNDNjOS1hM2ZmLWM1OTVkZWIyYzk3OA==
+
+- Gestione:
+    - Sonarr:
+        icon: sonarr.png
+        href: http://192.168.1.104:8989
+        description: Serie TV
+        server: my-docker
+        container: sonarr
+        widget:
+          type: sonarr
+          url: http://192.168.1.104:8989
+          key: 4ba34fa7b50747a09998f56e5c072e48
+    - Radarr:
+        icon: radarr.png
+        href: http://192.168.1.104:7878
+        description: Film
+        server: my-docker
+        container: radarr
+        widget:
+          type: radarr
+          url: http://192.168.1.104:7878
+          key: fcc3f5743d5246c1b89a9840217f3a4e
+    - Prowlarr:
+        icon: prowlarr.png
+        href: http://192.168.1.104:9696
+        description: Indexers
+        server: my-docker
+        container: prowlarr
+        widget:
+          type: prowlarr
+          url: http://192.168.1.104:9696
+          key: 2cf7c70a0d2e44b3bb7b8c4243927ddb
+    - Bazarr:
+        icon: bazarr.png
+        href: http://192.168.1.104:6767
+        description: Sottotitoli
+        server: my-docker
+        container: bazarr
+        widget:
+          type: bazarr
+          url: http://192.168.1.104:6767
+          key: c824cbbb640f593671226e0793430fe6
+    - Tdarr:
+        icon: tdarr.png
+        href: http://192.168.1.104:8265
+        description: Transcodifica & Risparmio Spazio
+        server: my-docker
+        container: tdarr
+        widget:
+          type: tdarr
+          url: http://192.168.1.104:8265
+
+- Sistema:
+    - Portainer:
+        icon: portainer.png
+        href: http://192.168.1.104:9000
+        description: Gestione Docker
+        server: my-docker
+        container: portainer
+    - Dozzle:
+        icon: dozzle.png
+        href: http://192.168.1.104:8888
+        description: Log Viewer
+        server: my-docker
+        container: dozzle

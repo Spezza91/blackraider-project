@@ -35,7 +35,7 @@ services:
       - qbittorrent
       - gluetun
     restart: unless-stopped
-    
+
   # --- GESTORE DOWNLOAD ---
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -113,6 +113,61 @@ services:
       - prowlarr
     restart: unless-stopped
 
+  # --- GESTORE SOTTOTITOLI ---
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome
+    volumes:
+      - ./config/bazarr:/config
+      - /mnt/media/data:/data
+    ports:
+      - 6767:6767
+    restart: unless-stopped
+
+  # --- INTERFACCIA RICHIESTE (Jellyseerr) ---
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=info
+      - TZ=Europe/Rome
+    ports:
+      - 5055:5055
+    volumes:
+      - ./config/jellyseerr:/app/config
+    restart: unless-stopped
+
+  # --- OTTIMIZZATORE SPAZIO (Tdarr) ---
+  tdarr:
+    container_name: tdarr
+    image: ghcr.io/haveagitgat/tdarr:latest
+    restart: unless-stopped
+    network_mode: bridge
+    ports:
+      - 8265:8265 # WebUI
+      - 8266:8266 # Server port
+    environment:
+      - TZ=Europe/Rome
+      - PUID=1000
+      - PGID=1000
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - webUIPort=8265
+      - internalNode=true # Il "lavoratore" è integrato
+      - nodeID=BlackRaiderNode
+    volumes:
+      - ./config/tdarr/server:/app/server
+      - ./config/tdarr/configs:/app/configs
+      - ./config/tdarr/logs:/app/logs
+      - /mnt/media/data/media:/media # La cartella da scansionare e convertire
+      - /tmp:/temp                   # Cartella temporanea per la conversione
+    devices:
+      - /dev/dri:/dev/dri # <--- FONDAMENTALE: Usa la GPU Intel
+
   # --- MEDIA SERVER ---
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
@@ -150,6 +205,8 @@ services:
       - /mnt/media/data:/data # Per vedere lo spazio disco
     ports:
       - 3000:3000
+    depends_on:
+      - socket-proxy
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -165,4 +222,15 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 9000:9000
+    restart: unless-stopped
+
+  # --- DOCKER SOCKET PROXY (Per le statistiche) ---
+  socket-proxy:
+    image: tecnativa/docker-socket-proxy
+    container_name: socket-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Montato in sola lettura
+    environment:
+      - CONTAINERS=1 # Permetti di leggere la lista container
+      - POST=0       # Vieta di modificare/spegnere cose (Sicurezza)
     restart: unless-stopped

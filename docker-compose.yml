@@ -18,7 +18,7 @@ services:
       - VPN_TYPE=wireguard
       - WIREGUARD_PRIVATE_KEY=${PROTON_PRIVATE_KEY}
       - SERVER_COUNTRIES=Switzerland # O Netherlands, Iceland...
-      - VPN_PORT_FORWARDING=on       # Attiva il Port Forwarding
+      - VPN_PORT_FORWARDING=on # Attiva il Port Forwarding
     restart: unless-stopped
 
   # --- MICROSERVIZIO CUSTOM ---
@@ -164,7 +164,7 @@ services:
       - ./config/tdarr/configs:/app/configs
       - ./config/tdarr/logs:/app/logs
       - /mnt/media/data/media:/media # La cartella da scansionare e convertire
-      - /tmp:/temp                   # Cartella temporanea per la conversione
+      - /tmp:/temp # Cartella temporanea per la conversione
     devices:
       - /dev/dri:/dev/dri # <--- FONDAMENTALE: Usa la GPU Intel
 
@@ -196,22 +196,34 @@ services:
     restart: unless-stopped
 
   # --- DASHBOARD ---
-  homepage:
-    image: ghcr.io/gethomepage/homepage:latest
-    container_name: homepage
-    volumes:
-      - ./config/homepage:/app/config
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /mnt/media/data:/data # Per vedere lo spazio disco
+  # --- DASHBOARD ---
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
     ports:
-      - 3000:3000
+      - 3000:80
+    restart: unless-stopped
     depends_on:
       - socket-proxy
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - HOMEPAGE_ALLOWED_HOSTS=*
-    restart: unless-stopped
+
+  # homepage:
+  #   image: ghcr.io/gethomepage/homepage:latest
+  #   container_name: homepage
+  #   volumes:
+  #     - ./config/homepage:/app/config
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /mnt/media/data:/data # Per vedere lo spazio disco
+  #   ports:
+  #     - 3001:3000 # Changed port to avoid conflict if enabled
+  #   depends_on:
+  #     - socket-proxy
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - HOMEPAGE_ALLOWED_HOSTS=*
+  #   restart: unless-stopped
 
   # --- GESTORE DOCKER ---
   portainer:
@@ -232,5 +244,5 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro # Montato in sola lettura
     environment:
       - CONTAINERS=1 # Permetti di leggere la lista container
-      - POST=0       # Vieta di modificare/spegnere cose (Sicurezza)
+      - POST=0 # Vieta di modificare/spegnere cose (Sicurezza)
     restart: unless-stopped

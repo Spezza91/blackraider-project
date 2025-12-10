@@ -199,10 +199,10 @@ services:
   # --- DASHBOARD ---
   frontend:
     # Quando avrai fatto il primo push su GitHub, decommenta 'image' e commenta 'build'
-    # image: ghcr.io/spezza91/test-project-frontend:latest 
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ghcr.io/spezza91/test-project-frontend:latest
+    # build:
+    #   context: ./frontend
+    #   dockerfile: Dockerfile
     container_name: frontend
     ports:
       - 3000:80

@@ -10,32 +10,55 @@ import { Observable } from 'rxjs';
     standalone: true,
     imports: [CommonModule, AppCardComponent],
     template: `
-    <div class="container mx-auto px-4 py-8">
-      <h1 class="text-4xl font-extrabold dark:text-white mb-8 text-center">BlackRaider Dashboard</h1>
-      
-      <div *ngIf="apps$ | async as apps">
+    <div class="min-h-screen py-12 px-4 selection:bg-purple-500 selection:text-white">
+      <div class="container mx-auto max-w-7xl">
         
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold dark:text-white mb-4 border-b border-gray-700 pb-2">Media</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <app-app-card *ngFor="let app of getAppsByCategory(apps, 'media')" [app]="app"></app-app-card>
-            </div>
-        </div>
+        <!-- Header -->
+        <header class="mb-16 text-center">
+            <h1 class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mb-4 drop-shadow-sm">
+                BlackRaider
+            </h1>
+            <p class="text-xl text-gray-400 font-light tracking-wide">
+                Your Personal Media Command Center
+            </p>
+        </header>
+      
+        <div *ngIf="apps$ | async as apps" class="space-y-16">
+        
+            <!-- Media Section -->
+            <section>
+                <div class="flex items-center mb-8">
+                    <div class="h-10 w-2 bg-gradient-to-b from-purple-500 to-blue-500 rounded-full mr-4"></div>
+                    <h2 class="text-3xl font-bold text-white tracking-tight">Media Server</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <app-app-card *ngFor="let app of getAppsByCategory(apps, 'media')" [app]="app"></app-app-card>
+                </div>
+            </section>
 
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold dark:text-white mb-4 border-b border-gray-700 pb-2">Downloads</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <app-app-card *ngFor="let app of getAppsByCategory(apps, 'download')" [app]="app"></app-app-card>
-            </div>
-        </div>
+            <!-- Downloads Section -->
+            <section>
+                <div class="flex items-center mb-8">
+                    <div class="h-10 w-2 bg-gradient-to-b from-yellow-400 to-orange-500 rounded-full mr-4"></div>
+                    <h2 class="text-3xl font-bold text-white tracking-tight">Downloads</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <app-app-card *ngFor="let app of getAppsByCategory(apps, 'download')" [app]="app"></app-app-card>
+                </div>
+            </section>
 
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold dark:text-white mb-4 border-b border-gray-700 pb-2">System</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <app-app-card *ngFor="let app of getAppsByCategory(apps, 'system')" [app]="app"></app-app-card>
-            </div>
-        </div>
+            <!-- System Section -->
+            <section>
+                <div class="flex items-center mb-8">
+                    <div class="h-10 w-2 bg-gradient-to-b from-gray-500 to-slate-700 rounded-full mr-4"></div>
+                    <h2 class="text-3xl font-bold text-white tracking-tight">System</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <app-app-card *ngFor="let app of getAppsByCategory(apps, 'system')" [app]="app"></app-app-card>
+                </div>
+            </section>
 
+        </div>
       </div>
     </div>
   `,

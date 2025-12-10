@@ -198,6 +198,8 @@ services:
   # --- DASHBOARD ---
   # --- DASHBOARD ---
   frontend:
+    # Quando avrai fatto il primo push su GitHub, decommenta 'image' e commenta 'build'
+    # image: ghcr.io/spezza91/test-project-frontend:latest 
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -205,8 +207,22 @@ services:
     ports:
       - 3000:80
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     depends_on:
       - socket-proxy
+
+  # --- AUTO UPDATE ---
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_LABEL_ENABLE=true # Aggiorna solo i container con label specifica
+      - WATCHTOWER_POLL_INTERVAL=300 # Controlla ogni 5 minuti
+    restart: unless-stopped
 
   # homepage:
   #   image: ghcr.io/gethomepage/homepage:latest

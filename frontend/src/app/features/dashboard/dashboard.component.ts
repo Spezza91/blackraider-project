@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppsService } from '../../core/services/apps.service';
+import { QBitService } from '../../core/services/qbit.service';
 import { AppLink } from '../../core/models/app-link.model';
 import { AppCardComponent } from '../../shared/components/app-card/app-card.component';
 import { Observable } from 'rxjs';
@@ -40,7 +41,19 @@ import { Observable } from 'rxjs';
             <section>
                 <div class="flex items-center mb-8">
                     <div class="h-10 w-2 bg-gradient-to-b from-yellow-400 to-orange-500 rounded-full mr-4"></div>
-                    <h2 class="text-3xl font-bold text-white tracking-tight">Downloads</h2>
+                    <h2 class="text-3xl font-bold text-white tracking-tight mr-8">Downloads</h2>
+                    
+                    <!-- Utility Buttons -->
+                    <div class="flex space-x-4">
+                        <button (click)="setFastMode()" 
+                                class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 font-medium text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> Fast Mode
+                        </button>
+                        <button (click)="setSlowMode()" 
+                                class="px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 font-medium text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-feather"></i> Slow Mode
+                        </button>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     <app-app-card *ngFor="let app of getAppsByCategory(apps, 'download')" [app]="app"></app-app-card>
@@ -68,7 +81,8 @@ export class DashboardComponent implements OnInit {
 
     apps$!: Observable<AppLink[]>;
 
-    constructor(private appsService: AppsService) { }
+
+    constructor(private appsService: AppsService, private qbitService: QBitService) { }
 
     ngOnInit(): void {
         this.apps$ = this.appsService.getApps();
@@ -76,5 +90,13 @@ export class DashboardComponent implements OnInit {
 
     getAppsByCategory(apps: AppLink[], category: string): AppLink[] {
         return apps.filter(app => app.category === category);
+    }
+
+    setFastMode(): void {
+        this.qbitService.setFastMode();
+    }
+
+    setSlowMode(): void {
+        this.qbitService.setSlowMode();
     }
 }

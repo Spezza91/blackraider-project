@@ -1,2 +1,6 @@
+# Ignora le configurazioni operative e i database
+config/
+gluetun_shared/
+*.db
+*.log
 .env
-gluetun_shared
